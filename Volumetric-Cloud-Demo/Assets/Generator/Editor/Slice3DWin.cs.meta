@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 44ea97fa3b0771f42aa13c437550eba3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - slicerCS: {fileID: 7200000, guid: 21b2f0659c6bd434f81825e14415969a, type: 3}
+  - slipterCS: {fileID: 7200000, guid: 2501b557e6bfea345b51586c7a5b911a, type: 3}
+  - tex3D: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

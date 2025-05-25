@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 0980a6ef2f9b3eb48bd9ec4c42a67ad7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - noiseComputeCS: {fileID: 7200000, guid: 610906fb135f245baaa76a04f34d7c24, type: 3}
+  - rSetting: {instanceID: 0}
+  - gSetting: {instanceID: 0}
+  - bSetting: {instanceID: 0}
+  - weatherMap: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

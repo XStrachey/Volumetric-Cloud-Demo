@@ -1,0 +1,70 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+#include "Packages/com.gbits.unity.graphics.shader-library/Math/MathCommon.hlsl"
+#include "Packages/com.gbits.unity.graphics.shader-library/Noise/SimplexNoise2D.hlsl"
+#include "Packages/com.gbits.unity.graphics.shader-library/Noise/WorleyNoise2D.hlsl"
+
+static const int THREADS_NUM = 16;
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+uint resolution;
+
+float3 randomness;
+
+inline float invertedWorley(float2 p)
+{
+    return 1.0 - worley(p, randomness.z + 1.0);
+}
+
+inline float invertedWorley(float2 p, float freq)
+{
+    return 1.0 - worley(p, freq);
+}
+
+[numthreads(THREADS_NUM, THREADS_NUM, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    float2 pos = id.xy / (float)resolution;
+
+    float simplexNoise = 0.0; // sample multiple simplex noises and create fBm
+    simplexNoise += 1.0 * snoise(pos * 2.0);
+    simplexNoise += 0.2 * snoise(pos * 9.0);
+    simplexNoise += 0.09 * snoise(pos * 18.0);
+    simplexNoise += 0.05 * snoise(pos * 24.0);
+
+    simplexNoise = mad(simplexNoise, 0.5, 0.5);
+
+    float cell = 0.0; // create worley noise fBm
+
+    cell += 1.0 * invertedWorley(pos * 4.0);
+    cell += 0.4 * invertedWorley(pos * 9.0);
+    cell += 0.1 * invertedWorley(pos * 19.0);
+
+    float coverage = remap(saturate(simplexNoise / 1.34), saturate(1.0 - cell / 1.5), 1.0, 0.0, 1.0); // modulate simplex noise by worley noise for coverage
+    coverage = saturate(mad(coverage, 0.55, 0.65)); // transfer most of it to range [0, 1]
+
+    float density = 0.0; // for rain clouds use one low frew worley noise sample
+    density += invertedWorley(pos, randomness.z + 3.0);
+    density *= coverage;
+
+    // use worley noise at different offsets to calculate different cloud types
+    float typeHigh = invertedWorley((pos + float2(-142.214, 8434.345)) * 2, randomness.z + 2.5);
+    typeHigh += invertedWorley((pos + float2(-142.214, 8434.345)) * 1, randomness.z + 2.5);
+    typeHigh = remap(saturate(simplexNoise / 1.34), saturate(1.0 - min(typeHigh, 1.0)), 1.0, 0.0, 1.0);
+    typeHigh = smoothstep(0.1, 0.6, typeHigh) * 0.5;
+
+    float typeMed = invertedWorley((pos + float2(1236.1234, -74.4356)) * 0.3, randomness.z);
+    typeMed = remap(saturate(simplexNoise / 1.34), saturate(1.0 - typeMed), 1.0, 0.0, 1.0);
+
+    float typeMed2 = invertedWorley((pos + float2(412.1234, -22.4356)) * 0.3, randomness.z);
+    typeMed2 = remap(saturate(simplexNoise / 1.34), saturate(1.0 - typeMed), 1.0, 0.0, 1.0);
+    typeMed = (smoothstep(0.1, 0.6, typeMed) + smoothstep(0.1, 0.6, typeMed2)) * 0.5;
+    float type = saturate(typeMed + typeHigh);
+
+    Result[id.xy] = float4(coverage, density, type, 1.0);
+}

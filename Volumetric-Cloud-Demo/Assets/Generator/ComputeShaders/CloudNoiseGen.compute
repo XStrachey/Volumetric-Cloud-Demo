@@ -1,0 +1,74 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel ShapeMain
+#pragma kernel DetailMain
+
+#include "Packages/com.gbits.unity.graphics.shader-library/Math/MathCommon.hlsl"
+#include "Packages/com.gbits.unity.graphics.shader-library/Noise/CloudNoise.hlsl"
+
+static const int THREADS_NUM = 8;
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture3D<float4> ShapeResult;
+RWTexture3D<float4> DetailResult;
+
+RWTexture3D<float4> Result;
+
+uint ShapeResolution;
+uint DetailResolution;
+
+float perlinPeriod;
+int perlinOctaves;
+float layeredWorley1Period;
+float layeredWorley2Period;
+float layeredWorley3Period;
+
+float worley1Period;
+float worley2Period;
+float worley3Period;
+
+[numthreads(THREADS_NUM, THREADS_NUM, THREADS_NUM)]
+void ShapeMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    float3 pos = id / (float)ShapeResolution;
+
+    float pfbm= lerp(1., perlinFbm(pos, perlinPeriod, perlinOctaves), .5);
+    pfbm = abs(pfbm * 2. - 1.); // billowy perlin noise
+
+    float g = 1 - worleyFbm(pos, layeredWorley1Period);
+    float b = 1 - worleyFbm(pos, layeredWorley2Period);
+    float a = 1 - worleyFbm(pos, layeredWorley3Period);
+    float r = remap(pfbm, 0., 1., g, 1.); // perlin-worley
+
+    // worley fbms with different frequencies
+    // float wfbm = g * .625 + b * .25 + a * .125; 
+    
+    // // cloud shape modeled after the GPU Pro 7 chapter
+    // float cloud = remap(r, wfbm - 1., 1., 0., 1.);
+    // cloud = remap(cloud, .65, 1., 0., 1.); // fake cloud coverage
+
+    // ShapeResult[id] = float4(cloud, cloud, cloud, 1);
+
+    // ShapeResult[id] = float4(r, g, b, a);
+
+    float low_freq_fBm = ( g * 0.625 ) + ( b * 0.25 ) + ( a * 0.125 );
+    float base_cloud = remap( r, low_freq_fBm - 1.0, 1.0, 0.0, 1.0 );
+    ShapeResult[id] = float4(base_cloud.xxx, 1);
+}
+
+[numthreads(THREADS_NUM, THREADS_NUM, THREADS_NUM)]
+void DetailMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    float3 pos = id / (float)DetailResolution;
+
+    float r = 1 - worleyFbm(pos, worley1Period);
+    float g = 1 - worleyFbm(pos, worley2Period);
+    float b = 1 - worleyFbm(pos, worley3Period);
+
+    // DetailResult[id] = float4(r, g, b, 1);
+
+    float high_freq_fBm = ( r * 0.625 ) + ( g * 0.25 ) + ( b * 0.125 );
+    DetailResult[id] = float4(high_freq_fBm.xxx, 1);
+}

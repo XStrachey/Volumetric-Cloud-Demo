@@ -1,0 +1,17 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Input;
+RWTexture2D<float4> Result;
+
+float4 ChannelMask;
+
+[numthreads(32, 32, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float4 tmp = Input[id.xy] * ChannelMask;
+    float grayScale = dot(tmp, tmp);
+    Result[id.xy] = float4(grayScale.xxx, 1);
+}

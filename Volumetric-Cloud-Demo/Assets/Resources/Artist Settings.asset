@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 480d35dfa4ba04f4b92c96330d3157d1, type: 3}
+  m_Name: Artist Settings
+  m_EditorClassIdentifier: 
+  mediumColor: {r: 0.7264151, g: 0.61334103, b: 0.61334103, a: 0}
+  shadeColor: {r: 0.4016999, g: 0.462448, b: 0.4811321, a: 0}
+  atmosphereColor: {r: 0.4117647, g: 0.7661403, b: 0.83137256, a: 0}
+  ambientColor: {r: 0.37798145, g: 0.5849056, b: 0.5382059, a: 0}
