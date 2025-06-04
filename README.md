@@ -56,8 +56,6 @@ $$
 
 In this project, the implementation assumes **single scattering** and ignores in-scattering from other directions to maintain real-time performance.
 
----
-
 ### 💡 Beer-Lambert Law for Light Absorption
 
 The attenuation of light along a ray through a medium is computed using the **Beer-Lambert law**:
@@ -67,8 +65,6 @@ T(d) = \exp\left(-\int_0^d \sigma_t(s) \, ds\right)
 $$
 
 In practice, this is approximated by accumulating the extinction term during raymarching steps.
-
----
 
 ### 🌫️ Raymarching Accumulation
 
@@ -88,8 +84,6 @@ Where:
 
 This accumulation approximates the scattered light contribution along the ray.
 
----
-
 ### 🌈 Henyey-Greenstein Phase Function
 
 The **Henyey-Greenstein phase function** is often used to approximate anisotropic scattering in clouds:
@@ -101,8 +95,6 @@ $$
 * $\theta$: Angle between incoming and outgoing directions
 * $g$: Anisotropy parameter, where $g > 0$ favors forward scattering (typical for clouds: $g \approx 0.8$)
 
----
-
 ### 🔊 Density Field and Procedural Noise
 
 Cloud density is procedurally defined using 3D fractal noise functions, such as **Perlin noise** or **FBM (Fractal Brownian Motion)**:
@@ -112,6 +104,36 @@ $$
 $$
 
 This gives a realistic, dynamic structure to the cloud volume.
+
+---
+
+## 🌌 Atmospheric Scattering Simulation
+
+This project incorporates a physically-based atmospheric scattering model to simulate realistic sky colors and lighting conditions. The model accounts for Rayleigh scattering, Mie scattering, and ozone absorption, enabling dynamic transitions such as blue skies, red sunsets, and the silver lining of clouds.
+
+### ☀️ Rayleigh Scattering
+
+Rayleigh scattering describes the scattering of light by particles much smaller than the wavelength of light, predominantly affecting shorter wavelengths (blue light). The scattering coefficient is inversely proportional to the fourth power of the wavelength:
+
+$$
+\beta_{\text{Rayleigh}}(\lambda) \propto \frac{1}{\lambda^4}
+$$
+
+This phenomenon explains why the sky appears blue during the day.
+
+### 🌫️ Mie Scattering
+
+Mie scattering accounts for the scattering of light by particles comparable in size to the wavelength of light, such as water droplets and aerosols. Unlike Rayleigh scattering, Mie scattering is less wavelength-dependent and is responsible for the white glare around the sun and the brightness of clouds. The phase function for Mie scattering is often approximated using the Henyey-Greenstein phase function:
+
+$$
+p(\cos\theta) = \frac{1 - g^2}{4\pi (1 + g^2 - 2g\cos\theta)^{3/2}}
+$$
+
+Where $g$ is the asymmetry parameter, typically ranging from 0 (isotropic scattering) to 1 (forward scattering).
+
+### 🧪 Ozone Absorption
+
+Ozone in the Earth's atmosphere absorbs certain wavelengths of light, particularly in the ultraviolet range, but also affects the visible spectrum. The absorption is characterized by specific coefficients for red, green, and blue wavelengths.
 
 ---
 
