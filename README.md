@@ -129,11 +129,11 @@ Since the exact solution to Mie scattering involves complex series of Maxwell's 
 
 We use the **Henyey-Greenstein phase function** to approximate the angular distribution of scattered light:
 
-\[
+$$
 p(\cos\theta) = \frac{1 - g^2}{4\pi (1 + g^2 - 2g\cos\theta)^{3/2}}
-\]
+$$
 
-Here, \( g \) is the anisotropy parameter. A typical value like \( g = 0.76 \) models forward-scattering behavior typical of cloud droplets.
+Here, $g$ is the anisotropy parameter. A typical value like $g = 0.76$ models forward-scattering behavior typical of cloud droplets.
 
 ### 🧪 Ozone Absorption
 
