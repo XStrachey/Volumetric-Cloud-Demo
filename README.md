@@ -121,15 +121,19 @@ $$
 
 This phenomenon explains why the sky appears blue during the day.
 
-### 🌫️ Mie Scattering
+### 🌫️ Mie Scattering and Phase Function Approximation
 
-Mie scattering accounts for the scattering of light by particles comparable in size to the wavelength of light, such as water droplets and aerosols. Unlike Rayleigh scattering, Mie scattering is less wavelength-dependent and is responsible for the white glare around the sun and the brightness of clouds. The phase function for Mie scattering is often approximated using the Henyey-Greenstein phase function:
+Mie scattering describes the interaction of light with particles comparable in size to the wavelength of light, such as water droplets or aerosols. This type of scattering is highly directional and is responsible for phenomena such as the white glare around the sun or the bright edges of clouds.
 
-$$
+Since the exact solution to Mie scattering involves complex series of Maxwell's equations, real-time rendering typically uses an approximation.
+
+We use the **Henyey-Greenstein phase function** to approximate the angular distribution of scattered light:
+
+\[
 p(\cos\theta) = \frac{1 - g^2}{4\pi (1 + g^2 - 2g\cos\theta)^{3/2}}
-$$
+\]
 
-Where $g$ is the asymmetry parameter, typically ranging from 0 (isotropic scattering) to 1 (forward scattering).
+Here, \( g \) is the anisotropy parameter. A typical value like \( g = 0.76 \) models forward-scattering behavior typical of cloud droplets.
 
 ### 🧪 Ozone Absorption
 
